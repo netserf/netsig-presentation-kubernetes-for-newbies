@@ -1,0 +1,8 @@
+# Cheat Sheet for NetSIG presentation - Kubernetes for Newbies
+# For more details:
+# https://github.com/netserf/netsig-presentation-kubernetes-for-newbies
+
+# Set up your workspace
+git clone git@github.com:netserf/netsig-presentation-kubernetes-for-newbies.git
+
+# TODO
