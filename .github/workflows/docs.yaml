@@ -15,4 +15,4 @@ jobs:
       - name: Check that markdown links are valid
         uses: gaurav-nelson/github-action-markdown-link-check@1.0.15
       - name: Run mdl to check for markdown lint
-        uses: actionshub/markdownlint@3.1.4
+        uses: actionshub/markdownlint@v3.1.4
