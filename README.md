@@ -12,7 +12,7 @@ applications.
 
 ## Presentation Slides
 
-* TODO
+* [Kubernetes for Newbies](kubernetes-for-newbies.pdf)
 
 ## Who is NetSIG?
 
