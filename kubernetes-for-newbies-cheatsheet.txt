@@ -5,4 +5,85 @@
 # Set up your workspace
 git clone git@github.com:netserf/netsig-presentation-kubernetes-for-newbies.git
 
-# TODO
+# Install minikube
+curl -LO \ 
+  https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# Install kubectl
+curl -LO \
+  "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install kubectl /usr/local/bin/kubectl
+
+# Start Cluster
+minikube start --nodes 2 -p newbie-demo
+minikube status -p newbie-demo
+minikube ssh -p newbie-demo -n newbie-demo # control plan
+minikube ssh -p newbie-demo -n newbie-demo-m02 # worker
+
+# Nodes Provisioned
+kubectl get nodes
+kubectl describe nodes
+
+# Create a Namespace
+kubectl create namespace newbie-ns
+kubectl get namespace
+kubectl describe namespace
+
+# Namespace: kube-system
+kubectl get namespace kube-system
+kubectl describe namespace kube-system
+
+# Create a Pod imperatively
+kubectl run nginx-pod --image=nginx:latest --restart=Never
+kubectl delete pod nginx-pod
+
+# Create a Pod declaratively
+kubectl apply -f k8s/nginx-pod.yaml
+
+# Take a Look at the Pod
+kubectl get pod nginx-pod [-o wide] [-o yaml]
+kubectl describe pod nginx-pod
+kubectl logs nginx-pod
+kubectl exec -it nginx-pod – /bin/bash
+	$ curl inside the container
+docker ps  # check the containers
+kubectl port-forward nginx-pod 8080:80
+
+# Create a deployment imperatively
+kubectl create deployment nginx-deployment --image=nginx:latest
+kubectl scale deployment  nginx-deployment –replicas=3
+kubectl delete deployment nginx-deployment
+
+# Create a deployment declaratively
+kubectl apply -f k8s/nginx-deployment.yaml
+
+# Take a Look at the Deployment
+kubectl get deployment nginx-deployment [-o wide] [-o yaml]
+kubectl describe deployment nginx-deployment
+kubectl get replicaset nginx-deployment
+kubectl get pods  # look at pods supporting this deployment
+kubectl logs <pod-name> # use pod names discovered
+docker ps  # check the containers
+
+# Run a K8S Service - Expose the deployment imperatively
+kubectl expose deployment nginx-deployment \
+  –name=nginx-service --port=80 --type=NodePort
+kubectl delete service nginx-service
+
+# Expose the deployment declaratively
+kubectl apply -f k8s/nginx-service.yaml
+
+# Take a Look at the Service
+kubectl get service nginx-service
+kubectl describe service nginx-service
+kubectl get endpoints nginx-service
+NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
+NODE_PORT=$(kubectl get service nginx-service -o jsonpath='{.spec.ports[0].nodePort}')
+curl $NODE_IP:$NODE_PORT
+kubectl logs <pod-name>
+
+# Clean-up
+minikube delete -p newbie-demo
+minikube status -p newbie-demo
+
