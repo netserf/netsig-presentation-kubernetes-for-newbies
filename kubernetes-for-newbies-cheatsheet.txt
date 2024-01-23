@@ -26,13 +26,15 @@ kubectl get nodes
 kubectl describe nodes
 
 # Create a Namespace
-kubectl create namespace newbie-ns
 kubectl get namespace
+kubectl create namespace newbie-ns
 kubectl describe namespace
+kubectl config set-context --current –-namespace=newbie-ns
 
 # Namespace: kube-system
 kubectl get namespace kube-system
 kubectl describe namespace kube-system
+kubectl get pods --namespace=kube-system
 
 # Create a Pod imperatively
 kubectl run nginx-pod --image=nginx:latest --restart=Never
@@ -46,13 +48,16 @@ kubectl get pod nginx-pod [-o wide] [-o yaml]
 kubectl describe pod nginx-pod
 kubectl logs nginx-pod
 kubectl exec -it nginx-pod – /bin/bash
-	$ curl inside the container
-docker ps  # check the containers
+    curl <container-ipaddr>:80
+docker ps  # check the "nodes"
+minikube ssh -p newbie-demo -n newbie-demo-m02  # worker node
+    docker ps
 kubectl port-forward nginx-pod 8080:80
+kubectl delete pod nginx-pod
 
 # Create a deployment imperatively
 kubectl create deployment nginx-deployment --image=nginx:latest
-kubectl scale deployment  nginx-deployment –replicas=3
+kubectl scale deployment  nginx-deployment –-replicas=3
 kubectl delete deployment nginx-deployment
 
 # Create a deployment declaratively
@@ -61,10 +66,8 @@ kubectl apply -f k8s/nginx-deployment.yaml
 # Take a Look at the Deployment
 kubectl get deployment nginx-deployment [-o wide] [-o yaml]
 kubectl describe deployment nginx-deployment
-kubectl get replicaset nginx-deployment
 kubectl get pods  # look at pods supporting this deployment
 kubectl logs <pod-name> # use pod names discovered
-docker ps  # check the containers
 
 # Run a K8S Service - Expose the deployment imperatively
 kubectl expose deployment nginx-deployment \
@@ -78,9 +81,9 @@ kubectl apply -f k8s/nginx-service.yaml
 kubectl get service nginx-service
 kubectl describe service nginx-service
 kubectl get endpoints nginx-service
-NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
-NODE_PORT=$(kubectl get service nginx-service -o jsonpath='{.spec.ports[0].nodePort}')
-curl $NODE_IP:$NODE_PORT
+minikube service nginx-service \
+  --url -p newbie-demo
+    curl <url>
 kubectl logs <pod-name>
 
 # Clean-up
