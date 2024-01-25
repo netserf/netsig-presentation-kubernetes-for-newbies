@@ -28,7 +28,7 @@ These presentations are hosted in person and on-line.
 
 ## Where can I find the cheatsheet for this presentation?
 
-* [Kubernetes for Newbies](kubernetes-for-newbies-cheatsheet.txt)
+* [Kubernetes for Newbies Cheatsheet](cheatsheet.txt)
 
 ## Contributing
 
