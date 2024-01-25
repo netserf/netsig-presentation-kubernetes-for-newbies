@@ -3,7 +3,7 @@
 # https://github.com/netserf/netsig-presentation-kubernetes-for-newbies
 
 # Set up your workspace
-git clone git@github.com:netserf/netsig-presentation-kubernetes-for-newbies.git
+git clone https://github.com/netserf/netsig-presentation-kubernetes-for-newbies.git
 
 # Install minikube
 curl -LO \ 
