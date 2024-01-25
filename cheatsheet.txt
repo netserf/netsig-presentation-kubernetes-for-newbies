@@ -19,7 +19,9 @@ sudo install kubectl /usr/local/bin/kubectl
 minikube start --nodes 2 -p newbie-demo
 minikube status -p newbie-demo
 minikube ssh -p newbie-demo -n newbie-demo # control plan
+    ps -e | grep -E 'kube|etcd|docker'
 minikube ssh -p newbie-demo -n newbie-demo-m02 # worker
+    ps -e | grep -E 'kube|etcd|docker'
 
 # Nodes Provisioned
 kubectl get nodes
@@ -29,11 +31,10 @@ kubectl describe nodes
 kubectl get namespace
 kubectl create namespace newbie-ns
 kubectl describe namespace
-kubectl config set-context --current –-namespace=newbie-ns
+kubectl config set-context newbie-demo –-namespace=newbie-ns
 
 # Namespace: kube-system
 kubectl get namespace kube-system
-kubectl describe namespace kube-system
 kubectl get pods --namespace=kube-system
 
 # Create a Pod imperatively
@@ -48,16 +49,14 @@ kubectl get pod nginx-pod [-o wide] [-o yaml]
 kubectl describe pod nginx-pod
 kubectl logs nginx-pod
 kubectl exec -it nginx-pod – /bin/bash
+    curl localhost:80
     curl <container-ipaddr>:80
-docker ps  # check the "nodes"
-minikube ssh -p newbie-demo -n newbie-demo-m02  # worker node
-    docker ps
 kubectl port-forward nginx-pod 8080:80
 kubectl delete pod nginx-pod
 
 # Create a deployment imperatively
 kubectl create deployment nginx-deployment --image=nginx:latest
-kubectl scale deployment  nginx-deployment –-replicas=3
+kubectl scale deployment nginx-deployment –-replicas=3
 kubectl delete deployment nginx-deployment
 
 # Create a deployment declaratively
@@ -70,8 +69,7 @@ kubectl get pods  # look at pods supporting this deployment
 kubectl logs <pod-name> # use pod names discovered
 
 # Run a K8S Service - Expose the deployment imperatively
-kubectl expose deployment nginx-deployment \
-  –name=nginx-service --port=80 --type=NodePort
+kubectl expose deployment nginx-deployment --name=nginx-service --port=80 --type=NodePort
 kubectl delete service nginx-service
 
 # Expose the deployment declaratively
@@ -81,9 +79,8 @@ kubectl apply -f k8s/nginx-service.yaml
 kubectl get service nginx-service
 kubectl describe service nginx-service
 kubectl get endpoints nginx-service
-minikube service nginx-service \
-  --url -p newbie-demo
-    curl <url>
+minikube service nginx-service --url -p newbie-demo -n newbie-ns
+curl <url>
 kubectl logs <pod-name>
 
 # Clean-up
